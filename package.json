@@ -1,0 +1,22 @@
+{
+  "name": "kybele-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Hera-for-Refugees/backend.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Hera-for-Refugees/backend/issues"
+  },
+  "homepage": "https://github.com/Hera-for-Refugees/backend#readme",
+  "dependencies": {
+    "ultimate-expressjs": "^1.4.1"
+  }
+}
