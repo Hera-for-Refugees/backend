@@ -2,9 +2,10 @@
   "name": "kybele-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,37 @@
   },
   "homepage": "https://github.com/Hera-for-Refugees/backend#readme",
   "dependencies": {
+    "@hapi/boom": "^8.0.1",
+    "@hapi/joi": "^16.1.8",
+    "authy-client": "^1.1.4",
+    "dotenv": "^8.2.0",
+    "express-router-wrapper": "^2.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "module-alias": "^2.2.2",
+    "pg": "^7.14.0",
+    "rate-limit-redis": "^1.7.0",
+    "sequelize": "^5.21.3",
     "ultimate-expressjs": "^1.4.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.7.2",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "prettier": "^1.19.1"
+  },
+  "engines": {
+    "node": "12.x"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@source": "./src",
+    "@components": "./src/components",
+    "@models": "./src/models.js",
+    "@lib": "./src/lib",
+    "@middlewares": "./src/middlewares"
   }
 }
