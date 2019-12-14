@@ -1,15 +1,15 @@
 require('module-alias/register')
 require('dotenv').config()
 
-const logger = require('@lib/logger')
 const Postgres = require('@lib/postgres')
 const Boom = require('boom')
 const Express = require('ultimate-expressjs')
 const RedisStore = require('rate-limit-redis')
+require('@models')
 
 const express = new Express({
   port: process.env.PORT,
-  logger,
+  logger: console,
   limiterOptions: {
     store: new RedisStore({
       client: require('redis').createClient(process.env.REDIS_URL)
@@ -33,6 +33,7 @@ express.setRoutes = app => {
 
 const app = async () => {
   await Postgres.init()
+  console.log('Postgres initialized')
   await express.listen()
 }
 

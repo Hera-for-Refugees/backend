@@ -9,17 +9,30 @@ const Crypto = require('@lib/crypto')
 
 router.post('/register', validateInput(User.registerFields), async req => {
   const { email, phoneNumber } = req.validatedInput
-  const { user } = await authy.registerUser({ email, phoneNumber })
+  if (await User.findOne({ where: { phoneNumber } })) {
+    throw Boom.preconditionFailed('User already exists')
+  }
+
+  const { user } = await authy.registerUser({
+    email,
+    phone: phoneNumber,
+    countryCode: 'TR'
+  })
   const savedUser = await User.create({
     ...req.validatedInput,
+    authyId: user.id,
+    RoleId: 1
+  })
+
+  const { message, device, cellphone } = await authy.requestSms({
     authyId: user.id
   })
 
-  const { phone } = await authy.requestSms({ authyId: user.id })
-
   return {
     user: savedUser,
-    message: `Notification sent to ${phone}`
+    message,
+    device,
+    cellphone
   }
 })
 

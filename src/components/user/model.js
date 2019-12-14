@@ -25,7 +25,7 @@ const Model = instance.define(
       allowNull: false
     },
     birthDate: {
-      type: Sequelize.DATE,
+      type: Sequelize.DATEONLY,
       required: true,
       allowNull: false
     },
@@ -35,10 +35,10 @@ const Model = instance.define(
       allowNull: true
     },
     lastPeriodDate: {
-      type: Sequelize.DATE,
+      type: Sequelize.DATEONLY,
       required: false,
       allowNull: true,
-      defaultValue: true
+      defaultValue: null
     },
     authyId: {
       type: Sequelize.STRING,
@@ -74,8 +74,7 @@ Model.registerFields = Joi.object({
   phoneNumber: Joi.string(),
 
   gender: Joi.string()
-    .allow('male')
-    .allow('female')
+    .allow('male', 'female')
     .required(),
 
   birthDate: Joi.date().required(),

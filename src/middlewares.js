@@ -13,6 +13,10 @@ const isAuthenticated = () => {
 
     const { id } = Crypto.verify(header)
 
+    if (!id) {
+      throw Boom.unsupportedMediaType('Payload can not be parsed.')
+    }
+
     const user = User.findOne({ where: { id } })
 
     if (!user) {
