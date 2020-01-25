@@ -18,26 +18,26 @@
   },
   "homepage": "https://github.com/Hera-for-Refugees/backend#readme",
   "dependencies": {
-    "@hapi/boom": "^8.0.1",
-    "@hapi/joi": "^16.1.8",
+    "@hapi/boom": "^9.0.0",
+    "@hapi/joi": "^17.1.0",
     "authy-client": "^1.1.4",
     "dotenv": "^8.2.0",
     "express-router-wrapper": "^2.1.0",
     "jsonwebtoken": "^8.5.1",
     "module-alias": "^2.2.2",
-    "pg": "^7.14.0",
+    "pg": "^7.17.1",
     "rate-limit-redis": "^1.7.0",
     "sequelize": "^5.21.3",
-    "ultimate-expressjs": "^1.4.1"
+    "ultimate-expressjs": "^1.5.0"
   },
   "devDependencies": {
-    "eslint": "^6.7.2",
+    "eslint": "^6.8.0",
     "eslint-config-standard": "^14.1.0",
-    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "eslint-config-prettier": "^6.7.0",
-    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-prettier": "^3.1.2",
     "prettier": "^1.19.1"
   },
   "engines": {

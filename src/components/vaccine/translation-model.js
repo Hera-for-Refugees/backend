@@ -1,9 +1,8 @@
 const { instance, Sequelize } = require('@lib/postgres')
 const Joi = require('@hapi/joi')
-const VaccineTranslations = require('./translation-model')
 
 const Model = instance.define(
-  'Vaccine',
+  'VaccineTranslation',
   {
     name: {
       type: Sequelize.STRING,
@@ -17,10 +16,7 @@ const Model = instance.define(
 
 Model.createFields = Joi.object({
   name: Joi.string().required(),
-  VaccineTranslations: Joi.array()
-    .items(VaccineTranslations.createFields)
-    .min(1)
-    .required()
+  LanguageId: Joi.number().required()
 })
 
 module.exports = Model

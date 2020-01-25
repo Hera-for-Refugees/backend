@@ -86,7 +86,9 @@ Model.registerFields = Joi.object({
 
   lastPeriodDate: Joi.date()
     .optional()
-    .default(null)
+    .default(null),
+
+  LanguageId: Joi.number().required()
 })
 
 Model.fields = module.exports = Model

@@ -1,16 +1,20 @@
 const { instance, Sequelize } = require('@lib/postgres')
+const Joi = require('@hapi/joi')
 
 const Model = instance.define(
-  'Notification',
+  'ReminderType',
   {
-    firstName: {
+    title: {
       type: Sequelize.STRING,
       required: true,
-      unique: true,
       allowNull: false
     }
   },
   { timestamps: true, paranoid: true }
 )
+
+Model.createFields = Joi.object({
+  title: Joi.string().required()
+})
 
 module.exports = Model
