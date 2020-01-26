@@ -3,24 +3,11 @@ require('dotenv').config()
 require('@models')
 
 const Postgres = require('@lib/postgres')
-const Boom = require('@hapi/boom')
 const Express = require('ultimate-expressjs')
-const RedisStore = require('rate-limit-redis')
 
 const express = new Express({
   port: process.env.PORT,
-  logger: null,
-  limiterOptions: {
-    store: new RedisStore({
-      client: require('redis').createClient(process.env.REDIS_URL)
-    }),
-    max: 10,
-    delay: 0,
-    windowMs: 1 * 60 * 1000,
-    handler: (req, res, next) => {
-      next(Boom.tooManyRequests('You have exceeded your rate limit.'))
-    }
-  }
+  logger: null
 })
 
 express.setRoutes = app => {

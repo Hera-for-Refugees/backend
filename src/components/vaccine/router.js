@@ -1,16 +1,16 @@
 const PromiseRouter = require('express-router-wrapper')
 const router = new PromiseRouter()
 const Boom = require('@hapi/boom')
-const { hasRole, isAuthenticated, validateInput } = require('@middlewares')
+const {
+  hasRole,
+  isAuthenticated,
+  validateInput,
+  shouldPaginate
+} = require('@middlewares')
 const roles = require('@components/role/enum')
 const { Vaccine, VaccineTranslation } = require('@models')
 
-router.get('/', isAuthenticated(), async ({ user }) => {
-  if (user.Role.name === roles.admin) {
-    return Vaccine.findAll({ include: [VaccineTranslation] })
-  }
-  return VaccineTranslation.findAll({ where: { LanguageId: user.LanguageId } })
-})
+router.get('/', isAuthenticated(), shouldPaginate(Vaccine))
 
 router.post(
   '/',

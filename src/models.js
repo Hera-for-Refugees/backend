@@ -10,43 +10,49 @@ const Child = require('@components/child/model')
 const User = require('@components/user/model')
 const Role = require('@components/role/model')
 const Vaccine = require('@components/vaccine/model')
+const VaccineDose = require('@components/vaccine/vaccine-dose')
 const VaccineTranslation = require('@components/vaccine/translation-model')
 
 ReminderTranslation.belongsTo(Reminder)
-Reminder.hasMany(ReminderTranslation)
 
-ReminderType.hasMany(Reminder)
+Reminder.hasMany(ReminderTranslation)
 Reminder.belongsTo(ReminderType)
 Reminder.belongsTo(Language)
-Language.hasMany(Reminder)
 
-Child.belongsToMany(Vaccine, {
-  through: 'ChildVaccine',
+ReminderType.hasMany(Reminder)
+
+Child.belongsTo(User)
+Child.belongsToMany(VaccineDose, {
+  through: 'ChildVaccineDose',
   foreignKey: 'ChildId'
 })
-Vaccine.belongsToMany(Child, {
-  through: 'ChildVaccine',
-  foreignKey: 'VaccineId'
+
+VaccineDose.belongsToMany(Child, {
+  through: 'ChildVaccineDose',
+  foreignKey: 'VaccineDoseId'
 })
+Vaccine.hasMany(VaccineTranslation)
+
+VaccineDose.belongsTo(Vaccine)
+Vaccine.hasMany(VaccineDose)
 
 VaccineTranslation.belongsTo(Vaccine)
 VaccineTranslation.belongsTo(Language)
-Vaccine.hasMany(VaccineTranslation)
-Language.hasMany(VaccineTranslation)
 
 BlogPost.belongsTo(Language)
 BlogPost.belongsTo(Blog)
 Blog.hasMany(BlogPost)
 
-Language.hasMany(BlogPost)
+Role.hasMany(User)
 
-Child.belongsTo(User)
+Language.hasMany(BlogPost)
+Language.hasMany(Reminder)
+Language.hasMany(User)
+Language.hasMany(VaccineTranslation)
+
 User.hasMany(Child)
 User.belongsTo(Role)
 User.belongsTo(Language)
-Role.hasMany(User)
-
-Language.hasMany(User)
 
 module.exports = {
   Blog,
@@ -58,5 +64,6 @@ module.exports = {
   Role,
   Language,
   Vaccine,
+  VaccineDose,
   VaccineTranslation
 }

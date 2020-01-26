@@ -69,13 +69,6 @@ const validateInput = schema => {
   }
 }
 
-const paginationOrder = Joi.object({
-  key: Joi.string().required(),
-  value: Joi.string()
-    .valid('ASC', 'DESC')
-    .required()
-})
-
 const paginationSchema = Joi.object({
   limit: Joi.number()
     .min(1)
@@ -83,16 +76,16 @@ const paginationSchema = Joi.object({
   page: Joi.number()
     .default(1)
     .min(1),
-  'order[]': Joi.array()
-    .items(paginationOrder)
+  order: Joi.array()
+    .items(Joi.string().required())
     .unique()
-    .default([{ key: 'createdAt', value: 'DESC' }])
+    .default(['createdAt DESC'])
     .optional(),
-  'attributes[]': Joi.array()
+  attributes: Joi.array()
     .items(Joi.string())
-    .default(['id', 'createdAt', 'updatedAt', 'deletedAt'])
+    .default(null)
     .optional(),
-  'include[]': Joi.array()
+  include: Joi.array()
     .items(Joi.string().valid(...Object.keys(models)))
     .default([])
     .optional()
@@ -108,40 +101,38 @@ const paginationSchema = Joi.object({
  */
 const shouldPaginate = (Model, WhereCondition = {}) => {
   return async ({ query }, res, next) => {
-    if (!Array.isArray(query['order[]']) && query['order[]']) {
-      query['order[]'] = [query['order[]']]
+    if (!Array.isArray(query['order']) && query['order']) {
+      query['order'] = [query['order']]
     }
 
-    if (!Array.isArray(query['attributes[]']) && query['attributes[]']) {
-      query['attributes[]'] = [query['attributes[]']]
+    if (!Array.isArray(query['attributes']) && query['attributes']) {
+      query['attributes'] = [query['attributes']]
     }
 
-    if (!Array.isArray(query['include[]']) && query['include[]']) {
-      query['include[]'] = [query['include[]']]
+    if (!Array.isArray(query['include']) && query['include']) {
+      query['include'] = [query['include']]
     }
 
     const { error, value } = paginationSchema.validate(query)
 
+    console.log('value', value)
     if (error) {
-      return next(Boom.badRequest('Pagination validation failed', error))
+      throw Boom.badRequest('Pagination validation failed', error)
     }
 
     try {
-      send(
-        res,
-        200,
-        await Model.findAndCountAll({
-          where: WhereCondition,
-          offset: value.limit * (value.page - 1),
-          limit: value.limit,
-          order: value['order[]'].map(f => [f.key, f.value]),
-          attributes: value['attributes[]'],
-          include: value['include[]'].map(i => models[i])
-        })
-      )
+      return Model.findAndCountAll({
+        where: WhereCondition,
+        offset: value.limit * (value.page - 1),
+        limit: value.limit,
+        order: value['order'].map(f => f.split(' ')),
+        attributes: value['attributes'],
+        include: value['include'].map(i => models[i])
+      })
     } catch (exception) {
-      next(
-        Boom.badImplementation(`Uncaught postgresql error occurred`, exception)
+      throw Boom.badImplementation(
+        `Uncaught postgresql error occurred`,
+        exception
       )
     }
   }

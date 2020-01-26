@@ -7,7 +7,6 @@ const Model = instance.define(
     fullName: {
       type: Sequelize.STRING,
       required: true,
-      unique: true,
       allowNull: false
     },
     gender: {
@@ -29,7 +28,19 @@ Model.registerFields = Joi.object({
   gender: Joi.string()
     .valid(...['male', 'female'])
     .required(),
-  birthDate: Joi.string(),
+  birthDate: Joi.date().required(),
+  Vaccines: Joi.array()
+    .items(Joi.number())
+    .default([]),
+  UserId: Joi.number().required()
+})
+
+Model.addChildFields = Joi.object({
+  fullName: Joi.string().required(),
+  gender: Joi.string()
+    .valid(...['male', 'female'])
+    .required(),
+  birthDate: Joi.date().required(),
   Vaccines: Joi.array()
     .items(Joi.number())
     .default([])

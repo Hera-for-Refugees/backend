@@ -2,75 +2,67 @@ const PromiseRouter = require('express-router-wrapper')
 const router = new PromiseRouter()
 const Boom = require('@hapi/boom')
 const { Child, Vaccine, User, VaccineTranslation } = require('@models')
-const { isAuthenticated, hasRole, validateInput } = require('@middlewares')
+const {
+  isAuthenticated,
+  hasRole,
+  validateInput,
+  shouldPaginate
+} = require('@middlewares')
 const roles = require('@components/role/enum')
 
-router.get('/', isAuthenticated(), async ({ user }) => {
-  if (user.Role.name === roles.admin) {
-    return Child.findAll({ include: [Vaccine, User] })
-  }
-
-  return user.getChildren()
-})
+router.get('/', isAuthenticated(), hasRole(roles.admin), shouldPaginate(Child))
 
 router.post(
   '/',
   isAuthenticated(),
+  hasRole(roles.admin),
   validateInput(Child.registerFields),
   async ({ validatedInput, user }) => {
-    const child = await Child.create({ ...validatedInput, UserId: user.id })
+    return Child.create(validatedInput)
+  }
+)
 
-    const vaccines = await Promise.all(
-      validatedInput.Vaccines.map(id => Vaccine.findOne({ where: { id } }))
-    )
-    await child.addVaccines(vaccines)
+router.get(
+  '/:id',
+  isAuthenticated(),
+  hasRole(roles.admin),
+  async ({ params, user }) => {
+    const child = await Child.findOne({
+      where: params,
+      include: [
+        {
+          model: Vaccine,
+          as: 'Vaccines',
+          include: [
+            {
+              model: VaccineTranslation
+            }
+          ]
+        }
+      ]
+    })
+
+    if (!child) {
+      throw Boom.notFound('Child not found')
+    }
+
     return child
   }
 )
 
-router.get('/:id', isAuthenticated(), async ({ params, user }) => {
-  const child = await Child.findOne({
-    where: params,
-    include: [
-      {
-        model: Vaccine,
-        include: [
-          {
-            model: VaccineTranslation,
-            as: 'VaccineTranslation'
-          }
-        ]
-      }
-    ]
-  })
-
-  if (!child) {
-    throw Boom.notFound('Child not found')
-  }
-
-  if (user.Role.name !== roles.admin && child.UserId !== user.id) {
-    throw Boom.unauthorized('Unable to access this resource')
-  }
-
-  return child
-})
-
 router.put(
   '/:id',
   isAuthenticated(),
+  hasRole(roles.admin),
   validateInput(Child.registerFields),
-  async ({ validatedInputs, user, params }) => {
+  async ({ validatedInputs, params }) => {
     const child = await Child.findOne({ where: params })
 
     if (!child) {
       throw Boom.notFound('Child not found')
     }
 
-    if (user.Role.name !== roles.admin && child.UserId !== user.id) {
-      throw Boom.unauthorized('Unauthorized access detected')
-    }
-
-    await child.updateAttributes(validatedInputs)
+    await child.update(validatedInputs)
 
     return child
   }

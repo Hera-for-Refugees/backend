@@ -6,33 +6,34 @@ const Model = instance.define(
   {
     firstName: {
       type: Sequelize.STRING,
-      required: true,
-      allowNull: false
+      required: false,
+      allowNull: true
     },
     lastName: {
       type: Sequelize.STRING,
-      required: true,
-      allowNull: false
+      required: false,
+      allowNull: true
     },
     phoneNumber: {
       type: Sequelize.STRING,
       required: true,
-      allowNull: false
+      allowNull: false,
+      unique: 'UserUniqueness'
     },
     gender: {
       type: Sequelize.ENUM('male', 'female'),
-      required: true,
-      allowNull: false
+      required: false,
+      allowNull: true
     },
     birthDate: {
       type: Sequelize.DATEONLY,
-      required: true,
-      allowNull: false
+      required: false,
+      allowNull: true
     },
     email: {
       type: Sequelize.STRING,
-      required: false,
-      allowNull: true
+      required: true,
+      unique: 'UserUniqueness'
     },
     lastPeriodDate: {
       type: Sequelize.DATEONLY,
@@ -45,6 +46,11 @@ const Model = instance.define(
       required: true,
       allowNull: false,
       unique: true
+    },
+    acceptedLicense: {
+      type: Sequelize.BOOLEAN,
+      required: true,
+      defaultValue: false
     }
   },
   { timestamps: true, paranoid: true }
@@ -56,10 +62,14 @@ Model.twoFactorFields = Joi.object({
 })
 
 Model.loginFields = Joi.object({
-  phoneNumber: Joi.string()
+  phoneNumber: Joi.string(),
+  LanguageId: Joi.number().required(),
+  email: Joi.string()
+    .email()
+    .required()
 })
 
-Model.registerFields = Joi.object({
+Model.updateFields = Joi.object({
   firstName: Joi.string()
     .alphanum()
     .min(3)
@@ -88,7 +98,9 @@ Model.registerFields = Joi.object({
     .optional()
     .default(null),
 
-  LanguageId: Joi.number().required()
+  LanguageId: Joi.number().required(),
+
+  acceptedLicense: Joi.bool().default(false)
 })
 
 Model.fields = module.exports = Model

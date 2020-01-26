@@ -2,16 +2,15 @@ const PromiseRouter = require('express-router-wrapper')
 const router = new PromiseRouter()
 const { Blog, BlogPost, Language } = require('@models')
 const roles = require('@components/role/enum')
-const { isAuthenticated, hasRole, validateInput } = require('@middlewares')
+const {
+  isAuthenticated,
+  hasRole,
+  validateInput,
+  shouldPaginate
+} = require('@middlewares')
 const Boom = require('@hapi/boom')
 
-router.get('/', isAuthenticated(), async ({ user }) => {
-  if (user.Role.name === roles.admin) {
-    return Blog.findAll()
-  }
-
-  return BlogPost.findAll({ where: { LanguageId: user.LanguageId } })
-})
+router.get('/', isAuthenticated(), shouldPaginate(Blog))
 
 router.post(
   '/',
