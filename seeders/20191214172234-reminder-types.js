@@ -3,10 +3,10 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert(
-      'Roles',
-      ['Vaccine', 'Pregnancy', 'General'].map((name, index) => ({
+      'ReminderTypes',
+      ['Vaccine', 'Pregnancy', 'General'].map((title, index) => ({
         id: index + 1,
-        name,
+        title,
         updatedAt: '2019-09-05 16:35:28.029+00',
         createdAt: '2019-09-05 16:35:28.029+00'
       })),
